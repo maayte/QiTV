@@ -81,9 +81,19 @@ class ChannelList(QMainWindow):
         self.export_button.clicked.connect(self.export_channels)
         ctl_layout.addWidget(self.export_button)
 
-        self.update_button = QPushButton("Update Channels")
-        self.update_button.clicked.connect(self.update_channels)
-        ctl_layout.addWidget(self.update_button)
+        #self.update_button = QPushButton("Genres")
+        #self.update_button.clicked.connect(self.update_channels)
+        #ctl_layout.addWidget(self.genres_button)
+
+        #self.update_button = QPushButton("Vod Category")
+        #self.update_button.clicked.connect(self.update_channels)
+        #ctl_layout.addWidget(self.vod_button)
+
+        #self.update_button = QPushButton("Series Category")
+        #self.update_button.clicked.connect(self.update_channels)
+        #ctl_layout.addWidget(self.series_button)
+
+        
 
         self.grid_layout.addWidget(self.upper_layout, 0, 0)
 
@@ -412,6 +422,10 @@ class ChannelList(QMainWindow):
             self.save_config()
             if load:
                 self.load_stb_channels(url, options)
+                self.load_stb_itv_genres(url, options)
+                self.load_stb_vod_categories(url, options)
+                self.load_stb_series_categories(url, options)
+                
             return True
         except Exception as e:
             if serverload != "/portal.php":
@@ -442,10 +456,10 @@ class ChannelList(QMainWindow):
             fetchurl = f"{url}/server/load.php?type=itv&action=get_genres"
             response = requests.get(fetchurl, headers=options["headers"])
             result = response.json()
-            channels = result["js"]
-            self.display_channels(channels)
+            itv_genres = result["js"]
+            self.display_channels(itv_genres)
             self.config["data"][self.config["selected"]]["options"] = options
-            self.config["data"][self.config["selected"]]["channels"] = itv_genres
+            self.config["data"][self.config["selected"]]["itv_genres"] = itv_genres
             self.save_config()
         except Exception as e:
             print(f"Error loading STB channels: {e}")
@@ -457,10 +471,10 @@ class ChannelList(QMainWindow):
             fetchurl = f"{url}/server/load.php?type=vod&action=get_categories"
             response = requests.get(fetchurl, headers=options["headers"])
             result = response.json()
-            channels = result["js"]
-            self.display_channels(channels)
+            vod_category = result["js"]
+            self.display_channels(vod_category)
             self.config["data"][self.config["selected"]]["options"] = options
-            self.config["data"][self.config["selected"]]["channels"] = vod_category
+            self.config["data"][self.config["selected"]]["vod_category"] = vod_category
             self.save_config()
         except Exception as e:
             print(f"Error loading STB channels: {e}")
@@ -472,8 +486,8 @@ class ChannelList(QMainWindow):
             fetchurl = f"{url}/server/load.php?type=series&action=get_categories"
             response = requests.get(fetchurl, headers=options["headers"])
             result = response.json()
-            channels = result["js"]
-            self.display_channels(channels)
+            series_category = result["js"]
+            self.display_channels(series_category)
             self.config["data"][self.config["selected"]]["options"] = options
             self.config["data"][self.config["selected"]]["channels"] = series_category
             self.save_config()
