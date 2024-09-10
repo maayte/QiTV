@@ -435,6 +435,52 @@ class ChannelList(QMainWindow):
         except Exception as e:
             print(f"Error loading STB channels: {e}")
 
+        def load_stb_itv_genres(self, url, options):
+        url = URLObject(url)
+        url = f"{url.scheme}://{url.netloc}"
+        try:
+            fetchurl = f"{url}/server/load.php?type=itv&action=get_genres"
+            response = requests.get(fetchurl, headers=options["headers"])
+            result = response.json()
+            channels = result["js"]
+            self.display_channels(channels)
+            self.config["data"][self.config["selected"]]["options"] = options
+            self.config["data"][self.config["selected"]]["channels"] = itv_genres
+            self.save_config()
+        except Exception as e:
+            print(f"Error loading STB channels: {e}")
+
+        def load_stb_vod_categories(self, url, options):
+        url = URLObject(url)
+        url = f"{url.scheme}://{url.netloc}"
+        try:
+            fetchurl = f"{url}/server/load.php?type=vod&action=get_categories"
+            response = requests.get(fetchurl, headers=options["headers"])
+            result = response.json()
+            channels = result["js"]
+            self.display_channels(channels)
+            self.config["data"][self.config["selected"]]["options"] = options
+            self.config["data"][self.config["selected"]]["channels"] = vod_category
+            self.save_config()
+        except Exception as e:
+            print(f"Error loading STB channels: {e}")
+
+        def load_stb_series_categories(self, url, options):
+        url = URLObject(url)
+        url = f"{url.scheme}://{url.netloc}"
+        try:
+            fetchurl = f"{url}/server/load.php?type=series&action=get_categories"
+            response = requests.get(fetchurl, headers=options["headers"])
+            result = response.json()
+            channels = result["js"]
+            self.display_channels(channels)
+            self.config["data"][self.config["selected"]]["options"] = options
+            self.config["data"][self.config["selected"]]["channels"] = series_category
+            self.save_config()
+        except Exception as e:
+            print(f"Error loading STB channels: {e}")
+            
+            
     def create_link(self, cmd):
         try:
             selected_provider = self.config["data"][self.config["selected"]]
